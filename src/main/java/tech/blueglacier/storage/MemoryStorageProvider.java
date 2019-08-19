@@ -43,18 +43,20 @@ public class MemoryStorageProvider extends AbstractStorageProvider {
 
         @Override
         protected Storage toStorage0() throws IOException {
-            return new MemoryStorage(bab.buffer(), bab.length());
+            return new MemoryStorageImpl(bab.buffer(), bab.length());
         }
     }
 
-    static final class MemoryStorage implements Storage {
+    static final class MemoryStorageImpl implements MemoryStorage {
         private byte[] data;
         private final int count;
 
-        public MemoryStorage(byte[] data, int count) {
+        public MemoryStorageImpl(byte[] data, int count) {
             this.data = data;
             this.count = count;
         }
+
+        public byte[] getData() { return data; }
 
         public InputStream getInputStream() throws IOException {
             if (data == null)
@@ -62,6 +64,7 @@ public class MemoryStorageProvider extends AbstractStorageProvider {
 
             return new ByteArrayInputStream(data, 0, count);
         }
+
 
         public void delete() {
             data = null;
