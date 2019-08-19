@@ -22,7 +22,7 @@ public abstract class Attachment {
         return bd;
     }
 
-    private Storage storage;
+    protected Storage storage;
 
     public InputStream getIs() {
         InputStream is;
@@ -34,7 +34,7 @@ public abstract class Attachment {
         return is;
     }
 
-    private int attachmentSize;
+    protected int attachmentSize;
 
     public int getAttachmentSize() {
         return attachmentSize;
