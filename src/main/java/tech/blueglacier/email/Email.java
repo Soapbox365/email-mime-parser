@@ -37,6 +37,10 @@ public class Email {
 	private Stack<EmailMessageType> emailMessageStack;
 	private int decodedEmailSize;
 	private int emailSize;
+
+	// Soapbox customisations:
+	private EmailAttachmentFactory emailAttachmentFactory;
+	private InlineImageReplacer inlineImageReplacer;
 	
 	public int getEmailSize() {
 		return emailSize;
@@ -56,6 +60,14 @@ public class Email {
 		this.emailMessageStack = new Stack<EmailMessageType>();
 		this.decodedEmailSize = 0;
 		this.emailSize = 0;
+	}
+
+	public void setEmailAttachmentFactory(EmailAttachmentFactory emailAttachmentFactory) {
+		this.emailAttachmentFactory = emailAttachmentFactory;
+	}
+
+	public void setInlineImageReplacer(InlineImageReplacer inlineImageReplacer) {
+		this.inlineImageReplacer = inlineImageReplacer;
 	}
 
 	public Header getHeader() {
@@ -141,8 +153,12 @@ public class Email {
 	}
 	
 	private void addAttachments(BodyDescriptor bd, InputStream is) {
-	   attachments.add(new EmailAttachment(bd,is));
-	   LOGGER.info("Email attachment identified");
+		if (emailAttachmentFactory != null) {
+			attachments.add(new EmailAttachment(bd, is));
+		} else {
+			attachments.add(emailAttachmentFactory.create(bd, is));
+		}
+	   	LOGGER.info("Email attachment identified");
 	}
 
 	private void addAttachments(Attachment attachment) {
@@ -295,14 +311,22 @@ public class Email {
 											   List<Attachment> removalList, Attachment attachment,
 											   String contentId, String imageMimeType) {
 		if (strHTMLBody.contains("cid:" + contentId)) {
-			String base64EncodedAttachment = null;
-			try {
-				base64EncodedAttachment = Base64.encodeBase64String(IOUtils.toByteArray(attachment.getIs()));
-			} catch (IOException e) {
-				throw new RuntimeException(e);
+			String srcURL;
+			if (inlineImageReplacer != null) {
+				srcURL = inlineImageReplacer.getSrcURL(attachment);
+			} else {
+				String base64EncodedAttachment = null;
+				try {
+					base64EncodedAttachment = Base64.encodeBase64String(IOUtils.toByteArray(attachment.getIs()));
+					srcURL = "data:" + imageMimeType + ";base64," + base64EncodedAttachment;
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
 			}
-			strHTMLBody = strHTMLBody.replace("cid:" + contentId, "data:" + imageMimeType + ";base64," + base64EncodedAttachment);
-			removalList.add(attachment);
+			strHTMLBody = strHTMLBody.replace("cid:" + contentId, srcURL);
+			if (inlineImageReplacer == null || inlineImageReplacer.removeFromAttachmentList()) {
+				removalList.add(attachment);
+			}
 			attachmentReplacedInHtmlBody = true;
 		}
 		return strHTMLBody;

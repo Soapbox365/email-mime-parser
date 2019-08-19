@@ -16,4 +16,9 @@ public class HtmlEmailBody extends Attachment {
 		return "emailBody.html";
 	}
 
+	@Override
+	public String getAttachmentId() {
+		return getAttachmentName();
+	}
+
 }

@@ -12,10 +12,11 @@ import java.io.InputStream;
 public abstract class Attachment {
 
     protected BodyDescriptor bd;
+    protected String attachmentId;
 
     public abstract String getAttachmentName();
 
-    private InputStream is;
+    public abstract String getAttachmentId();
 
     public BodyDescriptor getBd() {
         return bd;
@@ -24,6 +25,7 @@ public abstract class Attachment {
     private Storage storage;
 
     public InputStream getIs() {
+        InputStream is;
         try {
             is = storage.getInputStream();
         } catch (IOException e) {
