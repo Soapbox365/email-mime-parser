@@ -1,9 +1,7 @@
 package tech.blueglacier.parser;
 
-import tech.blueglacier.email.Email;
-import tech.blueglacier.email.EmailMessageType;
+import tech.blueglacier.email.*;
 import tech.blueglacier.email.EmailMessageType.EmailMessageTypeHierarchy;
-import tech.blueglacier.email.MultipartType;
 import org.apache.james.mime4j.MimeException;
 import org.apache.james.mime4j.parser.AbstractContentHandler;
 import org.apache.james.mime4j.stream.BodyDescriptor;
@@ -22,6 +20,14 @@ public class CustomContentHandler extends AbstractContentHandler {
 
     public Email getEmail() {
         return email;
+    }
+
+    public void setEmailAttachmentFactory(EmailAttachmentFactory emailAttachmentFactory) {
+        email.setEmailAttachmentFactory(emailAttachmentFactory);
+    }
+
+    public void setInlineImageReplacer(InlineImageReplacer inlineImageReplacer) {
+        email.setInlineImageReplacer(inlineImageReplacer);
     }
 
     @Override
