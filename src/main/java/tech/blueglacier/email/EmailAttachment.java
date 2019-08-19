@@ -25,8 +25,4 @@ public class EmailAttachment extends Attachment {
 		return Common.getAttachmentName(bd);		
 		}
 
-	@Override
-	public String getAttachmentId() {
-		return getAttachmentName();
-	}
 }

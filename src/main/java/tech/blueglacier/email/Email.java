@@ -153,7 +153,7 @@ public class Email {
 	}
 	
 	private void addAttachments(BodyDescriptor bd, InputStream is) {
-		if (emailAttachmentFactory != null) {
+		if (emailAttachmentFactory == null) {
 			attachments.add(new EmailAttachment(bd, is));
 		} else {
 			attachments.add(emailAttachmentFactory.create(bd, is));

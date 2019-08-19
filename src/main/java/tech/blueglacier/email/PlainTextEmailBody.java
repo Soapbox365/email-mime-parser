@@ -16,8 +16,4 @@ public class PlainTextEmailBody extends Attachment {
 		return "emailBody.txt";
 	}
 
-	@Override
-	public String getAttachmentId() {
-		return getAttachmentName();
-	}
 }

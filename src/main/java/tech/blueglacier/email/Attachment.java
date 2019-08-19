@@ -16,7 +16,9 @@ public abstract class Attachment {
 
     public abstract String getAttachmentName();
 
-    public abstract String getAttachmentId();
+    public String getAttachmentId() {
+        return getAttachmentName();
+    }
 
     public BodyDescriptor getBd() {
         return bd;
