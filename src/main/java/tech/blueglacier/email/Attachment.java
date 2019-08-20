@@ -15,6 +15,8 @@ public abstract class Attachment {
     protected BodyDescriptor bd;
     protected String attachmentId;
 
+    private  boolean inHtmlBody;
+
     public abstract String getAttachmentName();
 
     public String getAttachmentId() {
@@ -47,6 +49,10 @@ public abstract class Attachment {
         return ((MemoryStorage) storage).getData();
     }
 
+    public void deleteData() {
+        storage.delete();
+    }
+
     public void setIs(InputStream is) {
         StorageProvider storageProvider = new MemoryStorageProvider();
         try {
@@ -55,6 +61,14 @@ public abstract class Attachment {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean isInHtmlBody() {
+        return inHtmlBody;
+    }
+
+    public void setInHtmlBody(boolean inHtmlBody) {
+        this.inHtmlBody = inHtmlBody;
     }
 
     public Attachment(BodyDescriptor bd) {

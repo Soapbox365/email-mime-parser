@@ -327,6 +327,7 @@ public class Email {
 			if (inlineImageReplacer == null || inlineImageReplacer.removeFromAttachmentList()) {
 				removalList.add(attachment);
 			}
+			attachment.setInHtmlBody(true);
 			attachmentReplacedInHtmlBody = true;
 		}
 		return strHTMLBody;
