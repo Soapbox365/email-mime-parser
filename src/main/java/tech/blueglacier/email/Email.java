@@ -102,7 +102,7 @@ public class Email {
 		return isBodySet;
 	}
 
-	private boolean shouldIgnore(BodyDescriptor bd, InputStream is) {
+	private boolean shouldIgnore(BodyDescriptor bd) {
 		String attachmentName = Common.getAttachmentName(bd);
 		boolean shouldIgnore = (attachmentName == null);
 		if(shouldIgnore){
@@ -279,7 +279,7 @@ public class Email {
 	private void removeUnidentifiedMimePartsForAttachment() {
 		List<Attachment> removeList = new ArrayList<Attachment>();
 		for (Attachment attachment : attachments) {
-			if(shouldIgnore(attachment.bd, attachment.getIs())){				
+			if(shouldIgnore(attachment.bd)){
 				removeList.add(attachment);				
 			}
 		}
