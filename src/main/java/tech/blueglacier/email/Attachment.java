@@ -57,10 +57,16 @@ public abstract class Attachment {
         }
     }
 
+    public Attachment(BodyDescriptor bd) {
+        this(bd, null);
+    }
+
     public Attachment(BodyDescriptor bd, InputStream is) {
         this.bd = bd;
         attachmentSize = 0;
-        setIs(is);
+        if (is != null) {
+            setIs(is);
+        }
     }
 
 }
