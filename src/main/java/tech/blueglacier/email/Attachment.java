@@ -71,10 +71,6 @@ public abstract class Attachment {
         this.inHtmlBody = inHtmlBody;
     }
 
-    public Attachment(BodyDescriptor bd) {
-        this(bd, null);
-    }
-
     public Attachment(BodyDescriptor bd, InputStream is) {
         this.bd = bd;
         attachmentSize = 0;

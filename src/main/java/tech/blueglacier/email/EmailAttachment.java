@@ -16,10 +16,6 @@ public class EmailAttachment extends Attachment {
 		super(bd, is);
 	}
 
-	public EmailAttachment(BodyDescriptor bd){
-		super(bd);
-	}
-	
 	@Override
 	public String getAttachmentName(){
 		return Common.getAttachmentName(bd);		
