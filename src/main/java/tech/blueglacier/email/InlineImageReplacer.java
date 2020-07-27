@@ -4,5 +4,5 @@ public interface InlineImageReplacer {
 
     String getSrcURL(Attachment attachment);
 
-    boolean removeFromAttachmentList();
+    boolean removeFromAttachmentList(Attachment attachment);
 }

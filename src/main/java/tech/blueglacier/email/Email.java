@@ -41,7 +41,7 @@ public class Email {
 	// Soapbox customisations:
 	private EmailAttachmentFactory emailAttachmentFactory;
 	private InlineImageReplacer inlineImageReplacer;
-	
+
 	public int getEmailSize() {
 		return emailSize;
 	}
@@ -73,11 +73,11 @@ public class Email {
 	public Header getHeader() {
 		return header;
 	}
-	
-	public Attachment getPlainTextEmailBody(){		
+
+	public Attachment getPlainTextEmailBody(){
 		return plainTextEmailBody;
 	}
-	
+
 	public void fillEmailContents(BodyDescriptor bd, InputStream is){
 		LOGGER.info("mime part received");
 		if(addPlainTextEmailBody(bd,is)){}
@@ -98,7 +98,7 @@ public class Email {
 				LOGGER.info("Email calendar body identified");
 			}
 		}
-		
+
 		return isBodySet;
 	}
 
@@ -114,20 +114,20 @@ public class Email {
 	public Stack<MultipartType> getMultipartStack() {
 		return multipartStack;
 	}
-	
+
 	public Stack<EmailMessageType> getMessageStack() {
 		return emailMessageStack;
 	}
-	
+
 	public String getEmailSubject(){
-		Field subjectField = header.getField("Subject");	
+		Field subjectField = header.getField("Subject");
 		if (subjectField != null) {
 			Field decodedSubjectField = new CustomUnstructuredFieldImpl(subjectField,DecodeMonitor.SILENT);
 			return ((CustomUnstructuredFieldImpl)decodedSubjectField).getValue();
 		}
 		return null;
 	}
-	
+
 	public String getToEmailHeaderValue() {
 		Field to = header.getField("To");
 		if (to != null) {
@@ -135,23 +135,23 @@ public class Email {
 		}
 		return null;
 	}
-	
+
 	public String getCCEmailHeaderValue(){
-		Field cc = header.getField("Cc");	
+		Field cc = header.getField("Cc");
 		if (cc != null) {
 			return cc.getBody();
 		}
 		return null;
 	}
-	
+
 	public String getFromEmailHeaderValue(){
-		Field from = header.getField("From");	
-		if (from != null) {			
+		Field from = header.getField("From");
+		if (from != null) {
 			return from.getBody();
 		}
 		return null;
 	}
-	
+
 	private void addAttachments(BodyDescriptor bd, InputStream is) {
 		if (emailAttachmentFactory == null) {
 			attachments.add(new EmailAttachment(bd, is));
@@ -190,7 +190,7 @@ public class Email {
 				}
 				isBodySet = true;
 			}
-		}		
+		}
 		return isBodySet;
 	}
 
@@ -198,7 +198,7 @@ public class Email {
 		String bodyName = Common.getAttachmentName(emailHTMLBodyDescriptor);
 		return (emailHTMLBodyDescriptor.getMimeType().equalsIgnoreCase("text/html") && bodyName == null);
 	}
-	
+
 	private boolean isCalendarBody(BodyDescriptor emailCalendarBodyDescriptor) {
 		String bodyName = Common.getAttachmentName(emailCalendarBodyDescriptor);
 		return (emailCalendarBodyDescriptor.getMimeType().equalsIgnoreCase("text/calendar") && bodyName == null);
@@ -228,7 +228,7 @@ public class Email {
 				}
 				isBodySet = true;
 			}
-		}		
+		}
 		return isBodySet;
 	}
 
@@ -237,50 +237,50 @@ public class Email {
 		return (emailPlainBodyDescriptor.getMimeType().equalsIgnoreCase("text/plain") && bodyName == null);
 	}
 
-	public List<Attachment> getAttachments() {		
+	public List<Attachment> getAttachments() {
 		return attachments;
 	}
 
-	public Attachment getHTMLEmailBody() {		
+	public Attachment getHTMLEmailBody() {
 		return htmlEmailBody;
 	}
-	
-	public Attachment getCalendarBody() {		
+
+	public Attachment getCalendarBody() {
 		return calendarBody;
 	}
 
 	public void reArrangeEmail() {
 		decodedEmailSize = setEmailSize();
-		replaceInlineImageAttachmentsInHtmlBody();		
+		replaceInlineImageAttachmentsInHtmlBody();
 		removeUnidentifiedMimePartsForAttachment();
 		emailSize = setEmailSize();
 	}
 
 	private int setEmailSize() {
 		int emailSize = 0;
-		
+
 		if(getHTMLEmailBody() != null){
 			emailSize += getHTMLEmailBody().getAttachmentSize();
 		}
 		if (getPlainTextEmailBody() != null) {
 			emailSize += getPlainTextEmailBody().getAttachmentSize();
 		}
-		
+
 		if (getCalendarBody() != null) {
 			emailSize += getCalendarBody().getAttachmentSize();
 		}
-		
+
 		for (Attachment attachment : getAttachments()) {
 			emailSize += attachment.getAttachmentSize();
 		}
-		return emailSize;		
-	}	
+		return emailSize;
+	}
 
 	private void removeUnidentifiedMimePartsForAttachment() {
 		List<Attachment> removeList = new ArrayList<Attachment>();
 		for (Attachment attachment : attachments) {
 			if(shouldIgnore(attachment.bd)){
-				removeList.add(attachment);				
+				removeList.add(attachment);
 			}
 		}
 		removeAttachments(removeList);
@@ -324,7 +324,7 @@ public class Email {
 				}
 			}
 			strHTMLBody = strHTMLBody.replace("cid:" + contentId, srcURL);
-			if (inlineImageReplacer == null || inlineImageReplacer.removeFromAttachmentList()) {
+			if (inlineImageReplacer == null || inlineImageReplacer.removeFromAttachmentList(attachment)) {
 				removalList.add(attachment);
 			}
 			attachment.setInHtmlBody(true);
@@ -403,16 +403,16 @@ public class Email {
 		return charSet;
 	}
 
-	
+
 	private String convertStreamToString(InputStream is, String charSet) throws IOException {
 		if (is != null) {
 			return IOUtils.toString(is, charSet);
-		} else {       
+		} else {
 			return "";
 		}
 	}
-	
-	private InputStream concatInputStream(InputStream source, InputStream destination) throws IOException{		
-		return new SequenceInputStream(destination, source);		
+
+	private InputStream concatInputStream(InputStream source, InputStream destination) throws IOException{
+		return new SequenceInputStream(destination, source);
 	}
 }
