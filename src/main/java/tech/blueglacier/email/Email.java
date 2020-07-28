@@ -156,7 +156,10 @@ public class Email {
 		if (emailAttachmentFactory == null) {
 			attachments.add(new EmailAttachment(bd, is));
 		} else {
-			attachments.add(emailAttachmentFactory.create(bd, is));
+			EmailAttachment attachment = emailAttachmentFactory.create(bd, is);
+			if (attachment != null) {
+				attachments.add(attachment);
+			}
 		}
 	   	LOGGER.info("Email attachment identified");
 	}
